@@ -5,7 +5,7 @@
 
 Name:           tuxedo-drivers-kmod
 
-Version:        4.22.2
+Version:        4.22.3
 Release:        %autorelease
 Summary:        Drivers for Tuxedo computers
 
@@ -84,6 +84,11 @@ mv files/usr/lib/udev %{buildroot}%{_usr}/lib
 %license LICENSE
 
 %changelog
+* Wed 17 Jun 2026 Werner Sembach 4.22.3-1
+- Fix fedora-44 test
+- Adjust for current SPC and fix various problems with generated files
+- Switch to new tag workflow in CI
+
 * Wed Apr 29 2026 Maximilian Arnold - 4.22.2-1
 - Fix debian postinst dkms errors in chroot
 
