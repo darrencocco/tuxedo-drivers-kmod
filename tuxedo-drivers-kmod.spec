@@ -6,15 +6,14 @@
 Name:           tuxedo-drivers-kmod
 
 Version:        4.22.3
-Release:        %autorelease
+Release:        2%{?dist}
 Summary:        Drivers for Tuxedo computers
 
 Group:          System Environment/Kernel
 
 License:        GPLv2
 URL:            https://github.com/darrencocco/tuxedo-drivers-kmod
-Source0:        %{giturl}/-/archive/v%{version}/tuxedo-drivers-v%{version}.tar.gz
-Source1:        extract_modules.sh
+Source:        %{giturl}/-/archive/v%{version}/tuxedo-drivers-v%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Recommends:     udev-hid-bpf
@@ -22,7 +21,6 @@ Recommends:     udev-hid-bpf
 BuildRequires:  kmodtool
 BuildRequires:  make
 BuildRequires:  gcc
-BuildRequires:  shyaml
 
 %description
 Collection of Linux drivers for Tuxedo computers.
@@ -40,7 +38,6 @@ Configuration for Tuxedo computer drivers.
 
 %prep
 %autosetup -n tuxedo-drivers-v%{version} -p 1
-cp %{SOURCE1} .
 
 # error out if there was something wrong with kmodtool
 %{?kmodtool_check}
@@ -61,13 +58,12 @@ done
 
 %install
 # Install kernel modules
-eval $(./extract_modules.sh base_package.yml)
 for kernel_version in %{?kernel_versions}; do
  mkdir -p %{buildroot}%{kmodinstdir_prefix}/${kernel_version%%___*}/%{kmodinstdir_postfix}/
- for module_path in "${ARRAY[@]}"; do
+ for module_path in `find _kmod_build_${kernel_version%%___*}/ -regex .*\.ko`; do
    module_name=$(basename ${module_path})
-   install -D -m 755 _kmod_build_${kernel_version%%___*}/${module_path}.ko %{buildroot}%{kmodinstdir_prefix}/${kernel_version%%___*}/%{kmodinstdir_postfix}/
-   chmod a+x %{buildroot}%{kmodinstdir_prefix}/${kernel_version%%___*}/%{kmodinstdir_postfix}/${module_name}.ko
+   install -D -m 755 ${module_path} %{buildroot}%{kmodinstdir_prefix}/${kernel_version%%___*}/%{kmodinstdir_postfix}/
+   chmod a+x %{buildroot}%{kmodinstdir_prefix}/${kernel_version%%___*}/%{kmodinstdir_postfix}/${module_name}
  done
 done
 %{?akmod_install}
@@ -84,7 +80,11 @@ mv files/usr/lib/udev %{buildroot}%{_usr}/lib
 %license LICENSE
 
 %changelog
-* Wed 17 Jun 2026 Werner Sembach 4.22.3-1
+* Tue Jul 14 2026 Darren Cocco 4.22.3-2
+- Fixed spec file date error
+- Fixed incorrect module install process
+
+* Wed Jun 17 2026 Werner Sembach 4.22.3-1
 - Fix fedora-44 test
 - Adjust for current SPC and fix various problems with generated files
 - Switch to new tag workflow in CI
