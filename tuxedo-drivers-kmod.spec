@@ -5,8 +5,8 @@
 
 Name:           tuxedo-drivers-kmod
 
-Version:        4.22.3
-Release:        2%{?dist}
+Version:        4.25.0
+Release:        1%{?dist}
 Summary:        Drivers for Tuxedo computers
 
 Group:          System Environment/Kernel
@@ -80,6 +80,18 @@ mv files/usr/lib/udev %{buildroot}%{_usr}/lib
 %license LICENSE
 
 %changelog
+* Tue Oct 06 2026 Werner Sembach - 4.25.0-1
+- Fix Stellaris Gen5 and Gen6 lightbar behaviour on suspend
+- Add Stellaris Gen8 Intel support
+
+* Wed Sep 23 2026 Werner Sembach - 4.24.0-1
+- Add missing devices to AC Auto Boot
+- Refactor acpi_drivers to platform_drivers for Linux 7.3 support
+- Fix CI tests
+
+* Fri Aug 28 2026 Werner Sembach - 4.23.0-1
+- Fix NB02 keyboard backlight for kernel >= 7.2
+
 * Tue Jul 14 2026 Darren Cocco 4.22.3-2
 - Fixed spec file date error
 - Fixed incorrect module install process
